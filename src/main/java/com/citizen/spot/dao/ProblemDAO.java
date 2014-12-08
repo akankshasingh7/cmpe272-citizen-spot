@@ -27,6 +27,26 @@ public class ProblemDAO {
 		e.printStackTrace();
 	  }
 	}
+	
+	public int uploadProblem(Problem problem) throws SQLException
+	{
+		System.out.println("inside uploadProblem");
+		Connection connection = dataSource.getConnection();
+		Statement statement = connection.createStatement();
+		//int zip=Integer.parseInt(problem.getZipcode());
+		
+	//	System.out.println("zipcode :"+zip);
+		System.out.println("before insert");
+		String sql = "INSERT INTO problem(problem_name,description,date,severity,street,city,state,zipcode,country,image,type_id) values('"+problem.getProblemName()+"','"+problem.getDescription()+"','"+problem.getDate()+"','"+problem.getSeverity()+"','"+problem.getStreet()+"','"+problem.getCity()+"','"+problem.getState()+"','"+problem.getZipcode()+"','"+problem.getCountry()+"','"+problem.getUploadedFileLocation()+"','"+problem.getTypeId()+"')";
+		
+		int rowUpdated = statement.executeUpdate(sql);
+		System.out.println("after update sql");
+		statement.close();
+		connection.close();
+		return rowUpdated;
+
+	}
+	
 	public ArrayList<ProblemType> getProblemTypeList() throws SQLException {
 
 		ArrayList<ProblemType> problems =  new ArrayList<ProblemType>();
@@ -154,4 +174,6 @@ public class ProblemDAO {
 		connection.close();
 		return problem;
 	}
+	
+	
 }

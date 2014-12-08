@@ -210,7 +210,9 @@
 <script type="text/javascript">
     $(function () {
     	listProblems();
-    	$('#problem-date').datetimepicker();
+    	$('#problem-date').datetimepicker({
+    		format:	'yyyy-mm-dd hh:mm:ss'
+    	});
         
         
     });

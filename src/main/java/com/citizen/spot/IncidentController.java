@@ -2,6 +2,7 @@ package com.citizen.spot;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +35,8 @@ import java.io.OutputStream;
 import java.sql.Date;
 
 import com.sun.jersey.multipart.FormDataParam;
-import com.citizen.spot.model.ProblemTemp;
+import com.citizen.spot.dao.ProblemDAO;
+import com.citizen.spot.model.Problem;
 import com.citizen.spot.util.CitizenSpotUtil;
 
 @Path("/Incident")
@@ -47,39 +49,57 @@ public class IncidentController {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadProblem(
 			@FormDataParam("picture") InputStream uploadedInputStream,
-			@FormDataParam("problemType") String problemType,
-			@FormDataParam("problemSeverity") int problemSeverity,
-			@FormDataParam("problem-date") Date problemDate,
+			@FormDataParam("problemName") String problemName,
+			@FormDataParam("severity") int severity,
+			@FormDataParam("problemType") int problemType,
+			@FormDataParam("date") Timestamp date,
 			@FormDataParam("street") String street,
 			@FormDataParam("city") String city,
 			@FormDataParam("state") String state,
 			@FormDataParam("country") String country,
-			@FormDataParam("zip") String zip,
-			@FormDataParam("description") String description) {
+			@FormDataParam("zipcode") String zipcode,
+			@FormDataParam("description") String description)
+	{
+System.out.println("u r in upload Problem");
+/*** test***/
 
-		File photoDirectory = new File("images/problems");
+
+		File photoDirectory = new File("images\\problem");
 		String rootPath = photoDirectory.getAbsolutePath();
 		String fileName = CitizenSpotUtil.getUUID()+".jpg";
-        String uploadedFileLocation = rootPath + fileName;
+		System.out.println(" ---- rootpsth ----"+fileName);
+		
+        String uploadedFileLocation =  rootPath+"\\"+ fileName;
+        System.out.println("file location is "+uploadedFileLocation);
         
         // save it
         try {
-            writeToFile(uploadedInputStream, uploadedFileLocation);
+       
+          
             // from here save the problem object to database
-            ProblemTemp problem = new ProblemTemp();
-            problem.setProblemType(problemType);
-            problem.setProblemSeverity(problemSeverity);
-            problem.setProblemDate(problemDate);
+            Problem problem = new Problem();
+            problem.setProblemName(problemName);
+            System.out.println("problem name is "+ problemName);
+            problem.setSeverity(severity);
+            problem.setDate(date);
             problem.setStreet(street);
             problem.setCity(city);
             problem.setState(state);
             problem.setCountry(country);
-            problem.setZip(zip);
+            problem.setZipcode(zipcode);
+            problem.setTypeId(problemType);
             problem.setDescription(description);
             problem.setUploadedBy("username from session");
-            problem.setUploadedFileLocation(fileName);
-            System.out.println(problem);
+            problem.setUploadedFileLocation(uploadedFileLocation);
+            System.out.println("above the write to file");
+            writeToFile(uploadedInputStream, uploadedFileLocation);
+            System.out.println("after write to file");
+           // System.out.println(problem);
             // database call to save the problem object
+            ProblemDAO problemDAO = new ProblemDAO();
+            problemDAO.uploadProblem(problem);
+            System.out.println(problem.getCity());
+            
         } catch(Exception e) {
         	logger.error(e.getMessage());
             return Response.status(500).entity(e.getMessage()).build();
@@ -92,11 +112,15 @@ public class IncidentController {
         OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
         int read = 0;
         byte[] bytes = new byte[1024];
+    	System.out.println("1.we are in write to file");
 
         out = new FileOutputStream(new File(uploadedFileLocation));
         while ((read = uploadedInputStream.read(bytes)) != -1) {
+        	System.out.println("2.we are in write to file");
             out.write(bytes, 0, read);
         }
+    	System.out.println("3.we are in write to file");
+
         out.flush();
         out.close();
     }

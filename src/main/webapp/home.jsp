@@ -110,15 +110,21 @@
         <h4 class="modal-title">Upload a problem</h4>
       </div>
       <div class="modal-body">
-		<form class="form-horizontal" role="form" action="rest/Incident/upload" enctype="multipart/form-data" method="post">
+		<form class="form-horizontal" role="form" action="<%=request.getContextPath()%>/rest/Incident/upload" enctype="multipart/form-data"  method="post">
 		  <div class="form-group">
 		    <label for="problemType" class="col-sm-3 control-label">Type of problem</label>
 		    <div class="col-sm-9">
 		      <select class="form-control" id="problemType" name="problemType">
-		      	<option value="pothole">Pot Hole</option>
-		      	<option value="brokenPipe">Broken Pipe</option>
-		      	<option value="fallenTree">Fallen tree</option>
+		      	<option value="2">Pot Hole</option>
+		      	<option value="3">Broken Pipe</option>
+		      	<option value="4">Fallen tree</option>
 		      </select>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="problemName" class="col-sm-3 control-label">Problem Name</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="problemName" name="problemName" placeholder="Problem Name.">
 		    </div>
 		  </div>
 		  <div class="form-group">
@@ -137,8 +143,8 @@
 		  <div class="form-group">
 		    <label for="problem-date" class="col-sm-3 control-label">Date</label>
 		    <div class="col-sm-9">
-		      <div class='input-group date' id='problem-date' data-date-format="yyyy-mm-dd">
-				<input type='text' class="form-control" />
+		      <div class='input-group date' id='problem-date' data-date-format="yyyy-mm-dd hh:mm:ss">
+				<input type='text' name="date" class="form-control" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
               </div>
 		    </div>
@@ -156,7 +162,7 @@
 		    </div>
 		  </div>
 		  <div class="form-group">
-		    <label for="picture" class="col-sm-3 control-label">State</label>
+		    <label for="state" class="col-sm-3 control-label">State</label>
 		    <div class="col-sm-9">
 		      <input type="text" class="form-control" id="state" name="state" placeholder="State">
 		    </div>
@@ -236,8 +242,11 @@
 <script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
 <script type="text/javascript">
     $(function () {
-        $('#problem-date').datetimepicker();
-        
+    
+    
+    $('#problem-date').datetimepicker({
+		format:	'YYYY-MM-DD hh:mm:ss'
+	});
     });
 </script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -263,6 +272,7 @@
 				mapTypeControl: true,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
+				
 
 		//create the map, and place it in the HTML map div
 		map = new google.maps.Map(
@@ -276,6 +286,7 @@
 		title: "Current location!"
 		});
 		}
+		
 </script>
 </body>
 </html>

@@ -21,8 +21,50 @@ public class Problem implements Serializable {
 	private String street;
 	private String city;
 	private String state;
+	private String country; 
+	
 	private String zipcode;
 	private String image;
+	private String fileName;
+	private String uploadedBy;
+	
+	public String getUploadedBy() {
+		return uploadedBy;
+	}
+
+	public void setUploadedBy(String uploadedBy) {
+		this.uploadedBy = uploadedBy;
+	}
+
+	public String toString() { 
+	    return "problem Type: '" + this.problemName + 
+	    		"', description: '" + this.description +
+	    		
+	    		"', severity: '" + this.severity + 
+	    		"', date: '" + this.date + "'" + 
+	    	    "', street: '" + this.street + "'" + 
+	    	    "', city: '" + this.city + "'" + 
+	    	    "', state: '" + this.state + "'" + 
+	    	    "', country: '" + this.country + "'" + 
+	    	    "', zipcode: '" + this.zipcode + "'" + 
+	    	    "', image: '" + this.image + "'" + 
+	    	    "', uploaded By: '" + this.uploadedBy + "'";
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public String getUploadedFileLocation() {
+		return fileName;
+	}
+	public void setUploadedFileLocation(String uploadedFileLocation) {
+		this.fileName = uploadedFileLocation;
+	}
+	
 	public String getImage() {
 		return image;
 	}
