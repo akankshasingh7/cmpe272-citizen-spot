@@ -1,6 +1,7 @@
 package com.citizen.spot.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Problem implements Serializable {
@@ -11,7 +12,7 @@ public class Problem implements Serializable {
 	private int typeId;
 	private String problemName;
 	private String description;
-	private Date date;
+	private Timestamp date;
 	private String sideOfRoad;
 	private int severity;
 	private int count;
@@ -86,7 +87,7 @@ public class Problem implements Serializable {
 	public Date getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 	public int getCount() {

@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.citizen.spot.model.ChartList;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.model.ProblemType;
 
@@ -167,7 +168,7 @@ public class ProblemDAO {
 			problem.setAddressLine(rs.getString("address_line"));
 			problem.setCity(rs.getString("city"));
 			problem.setImage(rs.getString("image"));
-			problem.setDate(rs.getDate("date"));
+			problem.setDate(rs.getTimestamp("date"));
 		} 
 		rs.close();
 		statement.close();
@@ -175,5 +176,25 @@ public class ProblemDAO {
 		return problem;
 	}
 	
-	
+
+	public ArrayList<ChartList> displayProblemZipBarChart() throws SQLException
+	{
+		ArrayList<ChartList> chartList =  new ArrayList<ChartList>();
+		Connection connection = dataSource.getConnection();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT city, count(*) as num from problem group by zipcode order by num desc;";
+		ResultSet rs = statement.executeQuery(sql);
+		ChartList cl = new ChartList();		
+		while (rs.next()) {
+			cl.setCity(rs.getString("city"));
+			cl.setNumber(rs.getInt("num"));
+			chartList.add(cl);
+		}
+		rs.close();
+		statement.close();
+		connection.close();
+		return chartList;
+	}
+		
+
 }

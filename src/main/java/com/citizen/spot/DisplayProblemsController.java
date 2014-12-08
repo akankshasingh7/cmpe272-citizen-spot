@@ -19,6 +19,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.citizen.spot.dao.ProblemDAO;
+import com.citizen.spot.model.ChartList;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.model.ProblemType;
 
@@ -137,6 +138,32 @@ public class DisplayProblemsController {
 			ArrayList<Problem> problem = problemDAO.listProblems();
 			System.out.println("--- size of array listProblems ----"+problem.size());
 			return Response.status(200).entity(mapper.writeValueAsString(problem)).build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(e.getMessage()).build();
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Response.status(500).entity("failed").build();
+	}
+   
+    @GET
+	@Path("chartList")
+	@Produces(MediaType.APPLICATION_JSON)
+    public Response displayProblemZipBarChart() {
+
+		ProblemDAO problemDAO = new ProblemDAO();
+		try {
+			ArrayList<ChartList> chartValues = problemDAO.displayProblemZipBarChart();
+			System.out.println("--- size of array displayProblemZipBarChart ----"+chartValues.size());
+			return Response.status(200).entity(mapper.writeValueAsString(chartValues)).build();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(e.getMessage()).build();

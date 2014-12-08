@@ -34,10 +34,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Date;
 
+import java.util.Map;
+
 import com.sun.jersey.multipart.FormDataParam;
 import com.citizen.spot.dao.ProblemDAO;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.util.CitizenSpotUtil;
+import com.citizen.spot.util.ImageUtil;
 
 @Path("/Incident")
 public class IncidentController {
@@ -63,23 +66,11 @@ public class IncidentController {
 System.out.println("u r in upload Problem");
 /*** test***/
 
-
-		File photoDirectory = new File("images\\problem");
-		String rootPath = photoDirectory.getAbsolutePath();
-		String fileName = CitizenSpotUtil.getUUID()+".jpg";
-		System.out.println(" ---- rootpsth ----"+fileName);
+		String uuid = CitizenSpotUtil.getUUID();
 		
-        String uploadedFileLocation =  rootPath+"\\"+ fileName;
-        System.out.println("file location is "+uploadedFileLocation);
-        
-        // save it
         try {
-       
-          
-            // from here save the problem object to database
-            Problem problem = new Problem();
-            problem.setProblemName(problemName);
-            System.out.println("problem name is "+ problemName);
+        	Problem problem = new Problem();
+            problem.setTypeId(problemType);
             problem.setSeverity(severity);
             problem.setDate(date);
             problem.setStreet(street);
@@ -90,11 +81,9 @@ System.out.println("u r in upload Problem");
             problem.setTypeId(problemType);
             problem.setDescription(description);
             problem.setUploadedBy("username from session");
-            problem.setUploadedFileLocation(uploadedFileLocation);
-            System.out.println("above the write to file");
-            writeToFile(uploadedInputStream, uploadedFileLocation);
-            System.out.println("after write to file");
-           // System.out.println(problem);
+
+            problem.setUploadedFileLocation(writeToFile(uploadedInputStream, uuid));
+            System.out.println(problem);
             // database call to save the problem object
             ProblemDAO problemDAO = new ProblemDAO();
             problemDAO.uploadProblem(problem);
@@ -107,21 +96,10 @@ System.out.println("u r in upload Problem");
 		return Response.status(200).entity("success").build();
 	}
 	
-    // save uploaded file to new location
-    private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) throws Exception {
-        OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-        int read = 0;
-        byte[] bytes = new byte[1024];
-    	System.out.println("1.we are in write to file");
-
-        out = new FileOutputStream(new File(uploadedFileLocation));
-        while ((read = uploadedInputStream.read(bytes)) != -1) {
-        	System.out.println("2.we are in write to file");
-            out.write(bytes, 0, read);
-        }
-    	System.out.println("3.we are in write to file");
-
-        out.flush();
-        out.close();
+    private String writeToFile(InputStream uploadedInputStream, String uuid) throws Exception {
+    	File image = CitizenSpotUtil.stream2file(uploadedInputStream);
+    	Map uploadResult = ImageUtil.uploadImage(image, uuid);
+    	return uploadResult.get("url").toString();
     }
+    
 }

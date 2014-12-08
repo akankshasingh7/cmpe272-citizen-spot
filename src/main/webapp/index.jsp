@@ -18,7 +18,7 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" id="searchValue" placeholder= "search by address or ZIP"> <!--manami-->
+	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP or problem"> <!--manami-->
 	      <span id="submitSearchValue" class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>
@@ -186,7 +186,7 @@
       </div>
       <div class="modal-body">
 				<div class="row">
-					<div class="col-md-6"><img src="<%=request.getContextPath()%>/images/problems/pothole1_bg.jpg"></div>
+					<div class="col-md-6"><img height="150" width="150" id="problemImage" ></div>
 					<div class="col-md-6">
 						<div><span class="col-label">Location: </span><span id="problemLocationValue" class="col-value">asds</span></div>
 						<div><span class="col-label">Uploaded on: </span><span id="problemDateValue" class="col-value">asds</span></div>
@@ -221,7 +221,7 @@
 <script>
 			var geocoder;
 			var context = '<%=request.getContextPath()%>';
-
+			var rootURL = "http://localhost:8080/cityspot/";
 
 		if (navigator.geolocation)
 		{
@@ -262,7 +262,15 @@
 			  geocoder.geocode({'latLng': coords}, function(results, status) {
 			    if (status == google.maps.GeocoderStatus.OK) {
 			      if (results[0]) {
-			        	var currentZipcode = results[0].address_components[6].long_name;
+			        	var address_components = results[0].address_components;
+			        	var currentZipcode; 
+			        	for (var i = 0; i < address_components.length; ++i) {
+							if ('postal_code' == address_components[i].types[0]) {
+								currentZipcode = address_components[i].long_name;
+								break;
+							}
+					    }
+				        
 			        	funCurrentLocationProblems(currentZipcode);
 			         } else {
 			        alert('No results found');
@@ -279,7 +287,7 @@
 			var context = '<%=request.getContextPath()%>';
 			var i;
 			$.ajax({
-			    url : "rest/Problems/listProblems",
+			    url : rootURL+"rest/Problems/listProblems",
 			    type: "GET",
 			    success: function(data, textStatus, jqXHR)
 			    {	console.log(data);
@@ -330,22 +338,26 @@
 			event.preventDefault();
 			$(".media").html();
 			var zipcode = $("#searchValue").val();
-			
 			$.ajax({
-			    url : "rest/Problems/SearchByZipcode/"+zipcode,
+			    url : rootURL+"rest/Problems/SearchByZipcode/"+zipcode,
 			    type: "GET",
 			    dataType: 'json',
 			    success: function(data, textStatus, jqXHR)
 			    {	
-			    	var response = "";
+				  	var response = "";
+				  	if(data.length!=0)
+					{
 			    	data.forEach(function(entry) {
 			    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+context+entry.image+'"'+
 			    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+'</small></h4><div class="post-date">'+entry.city+'</div><p class="short-desc">'+entry.description+
 				            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
 				      
 			    	}); 
-			        
-			        $(".media").html(response);
+					}else
+					{	
+			            response+='<div class="media-body"><h4>No Content for the searched Zipcode!</h4></div>'; 
+					}
+				  	$(".media").html(response);
 			    },
 			    error: function (jqXHR, textStatus, errorThrown)
 			    {	
@@ -357,10 +369,10 @@
 		});
 
 		function fun(value)
-		{
+		{	var context = '<%=request.getContextPath()%>';
 			$("#successSearch").html();
 			$.ajax({
-			    url : "rest/Problems/listById/"+value,
+			    url : rootURL+"rest/Problems/listById/"+value,
 			    type: "GET",
 			    dataType: 'json',
 			    success: function(data, textStatus, jqXHR)
@@ -370,6 +382,9 @@
 			    	$("#problemDateValue").html(data.date);
 			    	$("#problemSeverityValue").html(data.severity);
 			    	$("#problemDescriptionValue").html(data.description);
+			    	var str = context+data.image;
+			    	alert(str);
+			    	$("#problemImage").attr('src',str);
 			    },
 			    error: function (jqXHR, textStatus, errorThrown)
 			    {
@@ -382,18 +397,26 @@
 		function funCurrentLocationProblems(currentZip)
 		{
 			$.ajax({
-			    url : "rest/Problems/SearchByZipcode/"+currentZip,
+			    url : rootURL+"rest/Problems/SearchByZipcode/"+currentZip,
 			    type: "GET",
 			    dataType: 'json',
 			    success: function(data, textStatus, jqXHR)
-			    {	
-			    	var response = "";
+			    {	var response = "";
+			   
+				if(data.length!=0)
+				{
+				    
 			    	data.forEach(function(entry) {
 			    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+context+entry.image+'"'+
 			    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+"  "+entry.city+'</small></h4><div class="post-date">'+entry.date+'</div><p class="short-desc">'+entry.description+
 				            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
 				      
 			    	}); 
+				}
+				else if(data.length==0)
+				{	
+					response+='<div class="media-body"><h4>No Content for the searched Zipcode!</h4></div>';	
+				}
 			        
 			        $(".media").html(response);
 			    },
@@ -405,6 +428,7 @@
 			    }
 			});	
 		}
+		
 </script>
 </body>
 </html>
