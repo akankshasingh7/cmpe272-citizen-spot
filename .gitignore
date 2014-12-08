@@ -3,3 +3,5 @@ target/
 .DS_Store
 .project
 .settings/
+src/main/webapp/META-INF/context.xml
+RemoteSystemsTempFiles
