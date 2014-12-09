@@ -47,7 +47,8 @@ public class ImageUtil {
 	
 	public static void main(String[] a) {
 		
-		File file = new File("C:\\Users\\akanksha\\Pictures\\generic-banner.jpg");
-		uploadImage(file, CitizenSpotUtil.getUUID());
+		File file = new File("/Users/bonnie/Desktop/mach.jpg");
+		Map uploadResult = uploadImage(file, CitizenSpotUtil.getUUID());
+		System.out.println(uploadResult.get("url").toString());
 	}
 }

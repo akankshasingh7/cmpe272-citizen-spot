@@ -2,31 +2,29 @@ package com.citizen.spot.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class Problem implements Serializable {
 	
 	private static final long serialVersionUID = -221849245616101006L;
 	
 	private int Id;
-	private int typeId;
+	private int typeId = 1;
 	private String problemName;
 	private String description;
 	private Timestamp date;
-	private String sideOfRoad;
-	private int severity;
-	private int count;
-	private float latitude;
-	private float longitude;
+	private String sideOfRoad ="";
+	private int severity = 1;
+	private int count = 0;
+	private double latitude = 0.0;
+	private double longitude = 0.0;
 	private String addressLine;
 	private String street;
 	private String city;
 	private String state;
-	private String country; 
+	private String country; //TODO - country field is not present in DB , need to add
 	
 	private String zipcode;
 	private String image;
-	private String fileName;
 	private String uploadedBy;
 	
 	public String getUploadedBy() {
@@ -38,7 +36,7 @@ public class Problem implements Serializable {
 	}
 
 	public String toString() { 
-	    return "problem Type: '" + this.problemName + 
+	    return "problem Type: '" + this.typeId + 
 	    		"', description: '" + this.description +
 	    		
 	    		"', severity: '" + this.severity + 
@@ -59,12 +57,6 @@ public class Problem implements Serializable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getUploadedFileLocation() {
-		return fileName;
-	}
-	public void setUploadedFileLocation(String uploadedFileLocation) {
-		this.fileName = uploadedFileLocation;
-	}
 	
 	public String getImage() {
 		return image;
@@ -84,7 +76,7 @@ public class Problem implements Serializable {
 	public void setTypeId(int typeId) {
 		this.typeId = typeId;
 	}
-	public Date getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 	public void setDate(Timestamp date) {
@@ -96,16 +88,16 @@ public class Problem implements Serializable {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(float latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(float longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 	public String getAddressLine() {

@@ -34,14 +34,15 @@ public class IncidentController {
 	public Response uploadProblem(
 			@FormDataParam("picture") InputStream uploadedInputStream,
 			@FormDataParam("problemName") String problemName,
-			@FormDataParam("severity") int severity,
+			@FormDataParam("problemSeverity") int severity,
 			@FormDataParam("problemType") int problemType,
-			@FormDataParam("date") Timestamp date,
+			@FormDataParam("problem-date") Timestamp date,
+			@FormDataParam("side-of-road") String sideOfRoad,
 			@FormDataParam("street") String street,
 			@FormDataParam("city") String city,
 			@FormDataParam("state") String state,
 			@FormDataParam("country") String country,
-			@FormDataParam("zipcode") String zipcode,
+			@FormDataParam("zip") String zipcode,
 			@FormDataParam("description") String description,
 			@Context HttpServletRequest request) {
 		
@@ -53,18 +54,22 @@ public class IncidentController {
 		try {
 			Problem problem = new Problem();
 			problem.setTypeId(problemType);
-			problem.setSeverity(severity);
+			problem.setProblemName(problemName);
+			problem.setDescription(description);
 			problem.setDate(date);
+			problem.setSideOfRoad(sideOfRoad);
+			
+			problem.setSeverity(severity);
+			problem.setLatitude(0.0);
+			problem.setLongitude(0.0);
 			problem.setStreet(street);
 			problem.setCity(city);
 			problem.setState(state);
-			problem.setCountry(country);
 			problem.setZipcode(zipcode);
-			problem.setTypeId(problemType);
-			problem.setDescription(description);
 			problem.setUploadedBy(user.getEmail());
 
-			problem.setUploadedFileLocation(writeToFile(uploadedInputStream, uuid));
+			String imagePath = writeToFile(uploadedInputStream, uuid);
+			problem.setImage(imagePath);
 			logger.info(problem);
 			ProblemDAO problemDAO = new ProblemDAO();
 			problemDAO.uploadProblem(problem);
@@ -81,7 +86,8 @@ public class IncidentController {
 			throws Exception {
 		File image = CitizenSpotUtil.stream2file(uploadedInputStream);
 		Map uploadResult = ImageUtil.uploadImage(image, uuid);
-		return uploadResult.get("url").toString();
+		String fileName = uploadResult.get("url").toString();
+		return fileName;
 	}
 
 }

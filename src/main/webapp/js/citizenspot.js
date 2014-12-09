@@ -24,19 +24,17 @@ $(function () {
 	        var percentVal = '0%';
 	        bar.width(percentVal)
 	        percent.html(percentVal);
-	    },
-	    uploadProgress: function(event, position, total, percentComplete) {
-	        var percentVal = percentComplete + '%';
-	        bar.width(percentVal)
-	        percent.html(percentVal);
+	        $(".progress").show();
 	    },
 	    success: function() {
 	        var percentVal = '100%';
 	        bar.width(percentVal)
 	        percent.html(percentVal);
+	        $(".progress").hide();
 	    },
 		complete: function(xhr) {
 			status.html(xhr.responseText);
+	        $(".progress").hide();
 		}
 	});
 });

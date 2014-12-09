@@ -144,7 +144,7 @@
 		    <label for="problem-date" class="col-sm-3 control-label">Date</label>
 		    <div class="col-sm-9">
 		      <div class='input-group date' id='problem-date' data-date-format="YYYY-MM-DD hh:mm:ss">
-				<input type='text' name="date" class="form-control" />
+				<input type='text' name="problem-date" class="form-control" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
               </div>
 		    </div>
@@ -180,6 +180,12 @@
 		    </div>
 		  </div>
 		  <div class="form-group">
+		    <label for="side-of-road" class="col-sm-3 control-label">Side of the Road</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="side-of-road" name="side-of-road" placeholder="Side of the Road">
+		    </div>
+		  </div>
+		  <div class="form-group">
 		    <label for="picture" class="col-sm-3 control-label">Picture</label>
 		    <div class="col-sm-9">
 		      <input type="file" class="form-control" id="picture" name="picture" placeholder="Upload a picture.">
@@ -195,9 +201,8 @@
       
       <div class="modal-footer">
 		<div class="progress pull-left">
-	        <div class="bar"></div >
-	        <div class="percent">0%</div >
-	    </div>
+			<img src="<%=request.getContextPath()%>/images/busy_small.gif">
+		</div>
       	<button type="submit" id="save" class="btn btn-default pull-right">Save</button></div>
       	</form>
       </div>

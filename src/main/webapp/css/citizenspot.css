@@ -126,7 +126,7 @@ body{
 #uploadModal .modal-dialog{
 	width: 800px;
 }
-
-.progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
-.bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
-.percent { position:absolute; display:inline-block; top:3px; left:48%; }
+.progress {
+	display: none;
+	height: 40px;
+}

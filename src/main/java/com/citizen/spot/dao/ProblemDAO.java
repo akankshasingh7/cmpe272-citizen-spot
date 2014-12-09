@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 import javax.naming.Context;
@@ -11,12 +12,16 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
+import com.citizen.spot.IncidentController;
 import com.citizen.spot.model.ChartList;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.model.ProblemType;
 
 public class ProblemDAO {
 
+	private static Logger logger = Logger.getLogger(IncidentController.class);
 	private DataSource dataSource;
 	 
 	public ProblemDAO(){
@@ -31,18 +36,34 @@ public class ProblemDAO {
 	
 	public int uploadProblem(Problem problem) throws SQLException
 	{
-		System.out.println("inside uploadProblem");
+		logger.info("inside uploadProblem");
 		Connection connection = dataSource.getConnection();
-		Statement statement = connection.createStatement();
-		//int zip=Integer.parseInt(problem.getZipcode());
 		
-	//	System.out.println("zipcode :"+zip);
-		System.out.println("before insert");
-		String sql = "INSERT INTO problem(problem_name,description,date,severity,street,city,state,zipcode,country,image,type_id) values('"+problem.getProblemName()+"','"+problem.getDescription()+"','"+problem.getDate()+"','"+problem.getSeverity()+"','"+problem.getStreet()+"','"+problem.getCity()+"','"+problem.getState()+"','"+problem.getZipcode()+"','"+problem.getCountry()+"','"+problem.getUploadedFileLocation()+"','"+problem.getTypeId()+"')";
+		logger.info("before insert");
+		String sql = "INSERT INTO `problem`(`type_id`, `problem_name`, `description`, `image`, `date`, `side_of_road`, "
+				+ "`severity`, `count`, `latitude`, `longitude`, `address_line`, `street`, `city`, `state`, `zipcode`, `uploaded_by`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
-		int rowUpdated = statement.executeUpdate(sql);
-		System.out.println("after update sql");
-		statement.close();
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setInt(1, problem.getTypeId());
+		preparedStatement.setString(2, problem.getProblemName());
+		preparedStatement.setString(3, problem.getDescription());
+		preparedStatement.setString(4, problem.getImage());
+		preparedStatement.setTimestamp(5, problem.getDate());
+		preparedStatement.setString(6, problem.getSideOfRoad());
+		preparedStatement.setInt(7, problem.getSeverity());
+		preparedStatement.setInt(8, problem.getCount());
+		preparedStatement.setDouble(9, problem.getLatitude());
+		preparedStatement.setDouble(10, problem.getLongitude());
+		preparedStatement.setString(11, problem.getAddressLine());
+		preparedStatement.setString(12, problem.getStreet());
+		preparedStatement.setString(13, problem.getCity());
+		preparedStatement.setString(14, problem.getState());
+		preparedStatement.setString(15, problem.getZipcode());
+		preparedStatement.setString(16, problem.getUploadedBy());
+		
+		int rowUpdated = preparedStatement.executeUpdate();
+		logger.info("after update sql");
+		preparedStatement.close();
 		connection.close();
 		return rowUpdated;
 
@@ -72,6 +93,7 @@ public class ProblemDAO {
 		connection.close();
 		return problems;
 	}
+	
 	public ArrayList<Problem> listProblems() throws SQLException
 	{
 		ArrayList<Problem> problems =  new ArrayList<Problem>();
@@ -106,13 +128,14 @@ public class ProblemDAO {
 		connection.close();
 		return problems;
 	}
+	
 	public ArrayList<Problem> displayTenProblemByZipcode(String zipcode) throws SQLException
 	{
 		ArrayList<Problem> pList = new ArrayList<Problem>();
 		Connection connection = dataSource.getConnection();
 		Statement statement = connection.createStatement();
 		String sql = "select * from problem where zipcode="+zipcode+" order by count desc limit 10";
-		System.out.println(" \n  ----- query is ---"+sql);
+		logger.info(" \n  ----- query is ---"+sql);
 		ResultSet rs = statement.executeQuery(sql);
 		
 		ArrayList<Problem> problemsList = new ArrayList<Problem>();
@@ -120,7 +143,7 @@ public class ProblemDAO {
 		while(rs.next())
 		{
 			Problem problem = new Problem();
-			System.out.println("-------  id returned is ------"+rs.getInt("id"));
+			logger.info("-------  id returned is ------"+rs.getInt("id"));
 			problem.setId(rs.getInt("id"));
 			problem.setTypeId(rs.getInt("type_id"));
 			problem.setProblemName(rs.getString("problem_name"));
@@ -135,26 +158,25 @@ public class ProblemDAO {
 			problem.setCity(rs.getString("city"));
 			problem.setImage(rs.getString("image"));
 			problemsList.add(problem);
-			
-			
 		} 
 		rs.close();
 		statement.close();
 		connection.close();
 		return problemsList;
 	}
+	
 	public Problem displayProblemById(String id) throws SQLException
 	{
 		Problem problem = new Problem();
 		Connection connection = dataSource.getConnection();
 		Statement statement = connection.createStatement();
 		String sql = "select * from problem where id="+id+";";
-		System.out.println(" \n  ----- query is ---"+sql);
+		logger.info(" \n  ----- query is ---"+sql);
 		ResultSet rs = statement.executeQuery(sql);
 		
 		while(rs.next())
 		{
-			System.out.println("-------  id returned is ------"+rs.getInt("id"));
+			logger.info("-------  id returned is ------"+rs.getInt("id"));
 			problem.setId(rs.getInt("id"));
 			problem.setTypeId(rs.getInt("type_id"));
 			problem.setProblemName(rs.getString("problem_name"));
@@ -175,7 +197,6 @@ public class ProblemDAO {
 		connection.close();
 		return problem;
 	}
-	
 
 	public ArrayList<ChartList> displayProblemZipBarChart() throws SQLException
 	{
