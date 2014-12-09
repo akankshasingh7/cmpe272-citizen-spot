@@ -30,3 +30,15 @@ Once someone is done changing a file let him push his/her change, then take that
 2. git rebase manamirepo/master
 
 then make your change and push to both your repo and the common repo.
+
+
+Change Log
+==========
+
+ALTER TABLE `user` ADD UNIQUE (email_id);
+ALTER TABLE `user` MODIFY `email_id` VARCHAR(100) NOT NULL;
+ALTER TABLE `user` MODIFY `password` VARCHAR(450) NOT NULL;
+ALTER TABLE `problem` MODIFY `image` VARCHAR(500);
+ALTER TABLE `problem` ADD `uploaded_by` VARCHAR(100);
+
+
