@@ -31,10 +31,12 @@ $(function () {
 	        bar.width(percentVal)
 	        percent.html(percentVal);
 	        $(".progress").hide();
+	        $("#uploadModal").modal("hide");
 	    },
 		complete: function(xhr) {
 			status.html(xhr.responseText);
 	        $(".progress").hide();
+	        $("#uploadModal").modal("hide");
 		}
 	});
 });

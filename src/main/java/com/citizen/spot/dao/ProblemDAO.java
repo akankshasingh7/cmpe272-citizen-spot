@@ -15,7 +15,9 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
 import com.citizen.spot.IncidentController;
+import com.citizen.spot.model.ChartCityList;
 import com.citizen.spot.model.ChartList;
+import com.citizen.spot.model.ChartZipList;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.model.ProblemType;
 
@@ -216,6 +218,43 @@ public class ProblemDAO {
 		connection.close();
 		return chartList;
 	}
+
+	public ArrayList<ChartZipList> getProblemByZip() throws SQLException {
 		
+		ArrayList<ChartZipList> chartList =  new ArrayList<ChartZipList>();
+		Connection connection = dataSource.getConnection();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT zipcode, count(*) as num from problem group by zipcode order by num desc";
+		ResultSet rs = statement.executeQuery(sql);		
+		while (rs.next()) {
+			ChartZipList cl = new ChartZipList();
+			cl.setZip(rs.getString("zipcode"));
+			cl.setNumber(rs.getInt("num"));
+			chartList.add(cl);
+		}
+		rs.close();
+		statement.close();
+		connection.close();
+		return chartList;
+	}
+
+	public ArrayList<ChartCityList> getProblemByCity() throws SQLException {
+		
+		ArrayList<ChartCityList> chartList =  new ArrayList<ChartCityList>();
+		Connection connection = dataSource.getConnection();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT city, count(*) as num from problem group by city order by num desc";
+		ResultSet rs = statement.executeQuery(sql);	
+		while (rs.next()) {
+			ChartCityList cl = new ChartCityList();	
+			cl.setCity(rs.getString("city"));
+			cl.setNumber(rs.getInt("num"));
+			chartList.add(cl);
+		}
+		rs.close();
+		statement.close();
+		connection.close();
+		return chartList;
+	}
 
 }

@@ -32,6 +32,7 @@
 	          <b class="badge bg-color-red bounceIn animated"> 21 </b>
 	        </span>
 	      </li>
+	      <li><a data-toggle="modal" href="#chartModal" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Chart</a></li>
 	      <li><a data-toggle="modal" href="#uploadModal" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Upload</a></li>
 	      <!-- <li class="custom-dpd"><a href="#about"><i class="fa fa-gear"></i> Settings</a></li> -->
 	
@@ -244,6 +245,22 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i></button>
+        <h4 class="modal-title">Problem Charts</h4>
+      </div>
+      <div class="modal-body">
+			
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script src="<%=request.getContextPath()%>/js/jquery-2.1.1.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
