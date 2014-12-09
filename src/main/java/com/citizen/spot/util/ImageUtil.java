@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class ImageUtil {
+
+	private static Logger logger = Logger.getLogger(ImageUtil.class);
 	private static final Cloudinary cloudinary = new Cloudinary(Cloudinary.asMap("cloud_name",
 			"dtcvcuxvl", "api_key", "713636812854857", "api_secret",
 			"0N1r_Er9N64FF1As8YQQyfTyjXg"));
@@ -36,8 +40,7 @@ public class ImageUtil {
 					  ),
 					  "tags", "special, for_homepage"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return result;
 	}

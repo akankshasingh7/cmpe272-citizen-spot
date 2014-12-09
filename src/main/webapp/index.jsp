@@ -90,7 +90,7 @@
         <h4 class="modal-title">Please Log In</h4>
       </div>
    <div class="modal-body">
-		<form class="form-horizontal" role="form" action="rest/User/login" method="post">
+		<form class="form-horizontal" role="form" action="<%=request.getContextPath()%>/rest/User/login" method="post">
 		  <div class="form-group">
 		    <label for="username" class="col-sm-3 control-label">Username</label>
 		    <div class="col-sm-9">
@@ -124,7 +124,7 @@
       </div>
       
 		    <div class="modal-body">
-		<form class="form-horizontal" role="form" action="rest/User/register" method="post">
+		<form class="form-horizontal" id="register-form" role="form" action="<%=request.getContextPath()%>/rest/User/register" method="post">
 		  
 		  <div class="form-group">
 		    <label for="firstname" class="col-sm-3 control-label">First Name</label>
@@ -148,13 +148,6 @@
 		  </div>
 		  
 		  <div class="form-group">
-		    <label for="username" class="col-sm-3 control-label">Username</label>
-		    <div class="col-sm-9">
-		      <input type="text" class="form-control" id="userName" name="userName" placeholder="Choose a Username">
-		    </div>
-		  </div>
-		  
-		  <div class="form-group">
 		    <label for="password" class="col-sm-3 control-label">Password</label>
 		    <div class="col-sm-9">
 		      <input type="password" class="form-control" id="password" name="password" placeholder="Password">
@@ -165,6 +158,48 @@
 		    <label for="password" class="col-sm-3 control-label">Password</label>
 		    <div class="col-sm-9">
 		      <input type="password" class="form-control" id="password2" name="password2" placeholder="Re enter Password">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="address1" class="col-sm-3 control-label">Street Address</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="address1" name="address1" placeholder="Street Address">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="street" class="col-sm-3 control-label">Street Address 2</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="street" name="street" placeholder="Street Address 2">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="city" class="col-sm-3 control-label">City</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="city" name="city" placeholder="City">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="state" class="col-sm-3 control-label">State</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="state" name="state" placeholder="State">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="zip" class="col-sm-3 control-label">Zip</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="zip" name="zip" placeholder="Zip">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="country" class="col-sm-3 control-label">Country</label>
+		    <div class="col-sm-9">
+		      <input type="text" class="form-control" id="country" name="country" placeholder="Country">
 		    </div>
 		  </div>
 		    
@@ -203,232 +238,11 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script src="<%=request.getContextPath()%>/js/jquery-2.1.1.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/moment.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/moment.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap-datetimepicker.js"></script>
-<script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
-<script type="text/javascript">
-    $(function () {
-    	listProblems();
-    	$('#problem-date').datetimepicker({
-    		format:	'yyyy-mm-dd hh:mm:ss'
-    	});
-        
-        
-    });
-</script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script>
-			var geocoder;
-			var context = '<%=request.getContextPath()%>';
-			var rootURL = "http://localhost:8080/cityspot/";
-
-		if (navigator.geolocation)
-		{
-				navigator.geolocation.getCurrentPosition(showCurrentLocation);
-		}
-		else
-		{
-			alert("Geolocation API not supported.");
-		}
-
-		function showCurrentLocation(position)
-		{
-				var latitude = position.coords.latitude;
-				var longitude = position.coords.longitude;
-				var coords = new google.maps.LatLng(latitude, longitude);
-				codeLatLng(coords);
-				var mapOptions = {
-				zoom: 15,
-				center: coords,
-				mapTypeControl: true,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-
-			//create the map, and place it in the HTML map div
-			map = new google.maps.Map(
-			document.getElementById("mapPlaceholder"), mapOptions
-			);
-	
-			//place the initial marker
-			var marker = new google.maps.Marker({
-			position: coords,
-			map: map,
-			title: "Current location!"
-			});
-		}
-		function codeLatLng(coords) {
-			geocoder = new google.maps.Geocoder();
-			  geocoder.geocode({'latLng': coords}, function(results, status) {
-			    if (status == google.maps.GeocoderStatus.OK) {
-			      if (results[0]) {
-			        	var address_components = results[0].address_components;
-			        	var currentZipcode; 
-			        	for (var i = 0; i < address_components.length; ++i) {
-							if ('postal_code' == address_components[i].types[0]) {
-								currentZipcode = address_components[i].long_name;
-								break;
-							}
-					    }
-				        
-			        	funCurrentLocationProblems(currentZipcode);
-			         } else {
-			        alert('No results found');
-			      }
-			    } else {
-			      alert('Geocoder failed due to: ' + status);
-			    }
-			  });
-			}
-					
-		
-		function listProblems() {
-			$("#listOfProblems").html();
-			var context = '<%=request.getContextPath()%>';
-			var i;
-			$.ajax({
-			    url : rootURL+"rest/Problems/listProblems",
-			    type: "GET",
-			    success: function(data, textStatus, jqXHR)
-			    {	console.log(data);
-			    	var response = "";
-			    	
-			    	data.forEach(function(entry) {
-				    	var val=entry.severity;
-				    	var i=0;
-				    	var j=0;
-				    	response += '<div class="thumb">'+
-			    					'<div class="row rating-share">'+
-			    					'<span class="severity pull-left">';
-			    					 while(i<5)
-				    				{
-				    					 
-				    					 if(j<val)
-					    				{	
-					    					response+=	'<i class="glyphicon glyphicon-star"></i>';
-					    					 
-					    				}
-						    				else
-						    			{
-					    					response+=	'<i class="glyphicon glyphicon-star-empty"></i>';
-						    			}
-			    					 	i++;
-			    					 	j++;
-			    					 }
-			    					 response+=	'</span>'+
-				       				'<span class="actions pull-right"><i class="fa fa-share-alt"></i></span>'+
-				       				'</div>'+
-				       				'<div class="row"><img height="200" width="200" src="'+context+entry.image+'" ></div>'+
-				       				'<div class="row"><p>'+entry.description+'<a data-toggle="modal" onclick="fun('+entry.id+')" href="#myModal1" data-event-id="">more</a>'+
-				       				'</p></div></div>';
-				    
-				  });
-
-			    			        
-			        $("#listOfProblems").html(response);
-			    },
-			    error: function (jqXHR, textStatus, errorThrown)
-			    {
-			 
-			    }
-			});
-		}
-		
-		$("#submitSearchValue").click(function(event){
-			event.preventDefault();
-			$(".media").html();
-			var zipcode = $("#searchValue").val();
-			$.ajax({
-			    url : rootURL+"rest/Problems/SearchByZipcode/"+zipcode,
-			    type: "GET",
-			    dataType: 'json',
-			    success: function(data, textStatus, jqXHR)
-			    {	
-				  	var response = "";
-				  	if(data.length!=0)
-					{
-			    	data.forEach(function(entry) {
-			    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+context+entry.image+'"'+
-			    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+'</small></h4><div class="post-date">'+entry.city+'</div><p class="short-desc">'+entry.description+
-				            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
-				      
-			    	}); 
-					}else
-					{	
-			            response+='<div class="media-body"><h4>No Content for the searched Zipcode!</h4></div>'; 
-					}
-				  	$(".media").html(response);
-			    },
-			    error: function (jqXHR, textStatus, errorThrown)
-			    {	
-			    	console.log(data);
-			        $("#errorMsg").html("No data fetched!");
-			   
-			    }
-			});
-		});
-
-		function fun(value)
-		{	var context = '<%=request.getContextPath()%>';
-			$("#successSearch").html();
-			$.ajax({
-			    url : rootURL+"rest/Problems/listById/"+value,
-			    type: "GET",
-			    dataType: 'json',
-			    success: function(data, textStatus, jqXHR)
-			    { 	console.log(data);
-			    	$("#displayProblemName").html(data.problemName);
-			    	$("#problemLocationValue").html(data.addressLine+" "+data.street);
-			    	$("#problemDateValue").html(data.date);
-			    	$("#problemSeverityValue").html(data.severity);
-			    	$("#problemDescriptionValue").html(data.description);
-			    	var str = context+data.image;
-			    	alert(str);
-			    	$("#problemImage").attr('src',str);
-			    },
-			    error: function (jqXHR, textStatus, errorThrown)
-			    {
-			    	console.log(data);
-			        $("#errorMsg").html("No data fetched!");
-			   
-			    }
-		});
-		}
-		function funCurrentLocationProblems(currentZip)
-		{
-			$.ajax({
-			    url : rootURL+"rest/Problems/SearchByZipcode/"+currentZip,
-			    type: "GET",
-			    dataType: 'json',
-			    success: function(data, textStatus, jqXHR)
-			    {	var response = "";
-			   
-				if(data.length!=0)
-				{
-				    
-			    	data.forEach(function(entry) {
-			    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+context+entry.image+'"'+
-			    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+"  "+entry.city+'</small></h4><div class="post-date">'+entry.date+'</div><p class="short-desc">'+entry.description+
-				            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
-				      
-			    	}); 
-				}
-				else if(data.length==0)
-				{	
-					response+='<div class="media-body"><h4>No Content for the searched Zipcode!</h4></div>';	
-				}
-			        
-			        $(".media").html(response);
-			    },
-			    error: function (jqXHR, textStatus, errorThrown)
-			    {	
-			    	console.log(data);
-			        $("#errorMsg").html("No data fetched!");
-			   
-			    }
-			});	
-		}
-		
-</script>
+<script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
 </body>
 </html>

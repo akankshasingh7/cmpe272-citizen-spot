@@ -4,25 +4,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.ws.rs.Consumes;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.simple.JSONObject;
 
 import com.citizen.spot.dao.UserDAO;
 import com.citizen.spot.model.User;
@@ -41,35 +37,49 @@ public class UserController {
 			@FormParam("firstName") String firstName,
 			@FormParam("lastName") String lastName,
 			@FormParam("email") String email,
-			@FormParam("userName") String userName,
-			@FormParam("password") String password) {
+			@FormParam("password") String password,
+			@FormParam("address1") String address1,
+			@FormParam("street") String street,
+			@FormParam("city") String city,
+			@FormParam("state") String state,
+			@FormParam("zip") String zip,
+			@FormParam("country") String country,
+			@Context HttpServletRequest request) {
 
 		UserDAO userDAO = new UserDAO();
+		HttpSession session = request.getSession();
 		try {
 			
-			User user = new User(userName, HashUtil.getSaltedHash(password), firstName, lastName, email);
+			User user = new User(firstName, lastName, email, HashUtil.getSaltedHash(password), "user", address1, street, city, state, zip, country);
+			
 			int rowNum = userDAO.createUser(user);
 			if(rowNum > 0) {
 				user.setPassword("");
+				session.setAttribute("USER", user);
 				return new Viewable("/home.jsp", user);
 			}
-			return new Viewable("/index.jsp", null);
+			else {
+				return new Viewable("/index.jsp", null);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return new Viewable("/index.jsp", null);
 		}
 	}
 	
 	@POST
 	@Path("login")
-	public Viewable login(@FormParam("userName") String userName, @FormParam("password") String password) {
+	public Viewable login(@FormParam("userName") String userName,
+			@FormParam("password") String password,
+			@Context HttpServletRequest request) {
 
 		UserDAO userDAO = new UserDAO();
+		HttpSession session = request.getSession();
 		try {
 			User user = userDAO.getUser(userName);
 			if(HashUtil.check(password, user.getPassword())) {
 				user.setPassword("");
-				ObjectMapper mapper = new ObjectMapper();
+				session.setAttribute("USER", user);
 				return new Viewable("/home.jsp", user);
 			}
 			else {
@@ -106,14 +116,11 @@ public class UserController {
 			e.printStackTrace();
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 	}

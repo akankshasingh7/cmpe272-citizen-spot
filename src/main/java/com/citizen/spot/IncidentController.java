@@ -1,52 +1,33 @@
 package com.citizen.spot;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.json.simple.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Date;
-
-import java.util.Map;
-
-import com.sun.jersey.multipart.FormDataParam;
 import com.citizen.spot.dao.ProblemDAO;
 import com.citizen.spot.model.Problem;
+import com.citizen.spot.model.User;
 import com.citizen.spot.util.CitizenSpotUtil;
 import com.citizen.spot.util.ImageUtil;
+import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/Incident")
 public class IncidentController {
 
-    private static Logger logger = Logger.getLogger(IncidentController.class);
-    
+	private static Logger logger = Logger.getLogger(IncidentController.class);
+
 	@POST
 	@Path("upload/")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -61,45 +42,46 @@ public class IncidentController {
 			@FormDataParam("state") String state,
 			@FormDataParam("country") String country,
 			@FormDataParam("zipcode") String zipcode,
-			@FormDataParam("description") String description)
-	{
-System.out.println("u r in upload Problem");
-/*** test***/
-
-		String uuid = CitizenSpotUtil.getUUID();
+			@FormDataParam("description") String description,
+			@Context HttpServletRequest request) {
 		
-        try {
-        	Problem problem = new Problem();
-            problem.setTypeId(problemType);
-            problem.setSeverity(severity);
-            problem.setDate(date);
-            problem.setStreet(street);
-            problem.setCity(city);
-            problem.setState(state);
-            problem.setCountry(country);
-            problem.setZipcode(zipcode);
-            problem.setTypeId(problemType);
-            problem.setDescription(description);
-            problem.setUploadedBy("username from session");
+		logger.info("u r in uploadProblem");
 
-            problem.setUploadedFileLocation(writeToFile(uploadedInputStream, uuid));
-            System.out.println(problem);
-            // database call to save the problem object
-            ProblemDAO problemDAO = new ProblemDAO();
-            problemDAO.uploadProblem(problem);
-            System.out.println(problem.getCity());
-            
-        } catch(Exception e) {
-        	logger.error(e.getMessage());
-            return Response.status(500).entity(e.getMessage()).build();
-        }
+		HttpSession session = request.getSession();
+		String uuid = CitizenSpotUtil.getUUID();
+		User user = (User) session.getAttribute("USER");
+		try {
+			Problem problem = new Problem();
+			problem.setTypeId(problemType);
+			problem.setSeverity(severity);
+			problem.setDate(date);
+			problem.setStreet(street);
+			problem.setCity(city);
+			problem.setState(state);
+			problem.setCountry(country);
+			problem.setZipcode(zipcode);
+			problem.setTypeId(problemType);
+			problem.setDescription(description);
+			problem.setUploadedBy(user.getEmail());
+
+			problem.setUploadedFileLocation(writeToFile(uploadedInputStream, uuid));
+			logger.info(problem);
+			ProblemDAO problemDAO = new ProblemDAO();
+			problemDAO.uploadProblem(problem);
+			logger.info(problem.getCity());
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();
+		}
 		return Response.status(200).entity("success").build();
 	}
-	
-    private String writeToFile(InputStream uploadedInputStream, String uuid) throws Exception {
-    	File image = CitizenSpotUtil.stream2file(uploadedInputStream);
-    	Map uploadResult = ImageUtil.uploadImage(image, uuid);
-    	return uploadResult.get("url").toString();
-    }
-    
+
+	private String writeToFile(InputStream uploadedInputStream, String uuid)
+			throws Exception {
+		File image = CitizenSpotUtil.stream2file(uploadedInputStream);
+		Map uploadResult = ImageUtil.uploadImage(image, uuid);
+		return uploadResult.get("url").toString();
+	}
+
 }

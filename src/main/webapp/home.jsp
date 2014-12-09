@@ -110,7 +110,7 @@
         <h4 class="modal-title">Upload a problem</h4>
       </div>
       <div class="modal-body">
-		<form class="form-horizontal" role="form" action="<%=request.getContextPath()%>/rest/Incident/upload" enctype="multipart/form-data"  method="post">
+		<form class="form-horizontal" role="form" id="upload-form" action="<%=request.getContextPath()%>/rest/Incident/upload" enctype="multipart/form-data"  method="post">
 		  <div class="form-group">
 		    <label for="problemType" class="col-sm-3 control-label">Type of problem</label>
 		    <div class="col-sm-9">
@@ -143,7 +143,7 @@
 		  <div class="form-group">
 		    <label for="problem-date" class="col-sm-3 control-label">Date</label>
 		    <div class="col-sm-9">
-		      <div class='input-group date' id='problem-date' data-date-format="yyyy-mm-dd hh:mm:ss">
+		      <div class='input-group date' id='problem-date' data-date-format="YYYY-MM-DD hh:mm:ss">
 				<input type='text' name="date" class="form-control" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
               </div>
@@ -194,6 +194,10 @@
 		  
       
       <div class="modal-footer">
+		<div class="progress pull-left">
+	        <div class="bar"></div >
+	        <div class="percent">0%</div >
+	    </div>
       	<button type="submit" id="save" class="btn btn-default pull-right">Save</button></div>
       	</form>
       </div>
@@ -236,57 +240,11 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script src="<%=request.getContextPath()%>/js/jquery-2.1.1.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/moment.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/moment.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap-datetimepicker.js"></script>
-<script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
-<script type="text/javascript">
-    $(function () {
-    
-    
-    $('#problem-date').datetimepicker({
-		format:	'YYYY-MM-DD hh:mm:ss'
-	});
-    });
-</script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script>
-		if (navigator.geolocation)
-		{
-				navigator.geolocation.getCurrentPosition(showCurrentLocation);
-		}
-		else
-		{
-			alert("Geolocation API not supported.");
-		}
-
-		function showCurrentLocation(position)
-		{
-				var latitude = position.coords.latitude;
-				var longitude = position.coords.longitude;
-				var coords = new google.maps.LatLng(latitude, longitude);
-
-				var mapOptions = {
-				zoom: 15,
-				center: coords,
-				mapTypeControl: true,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-		};
-				
-
-		//create the map, and place it in the HTML map div
-		map = new google.maps.Map(
-		document.getElementById("mapPlaceholder"), mapOptions
-		);
-
-		//place the initial marker
-		var marker = new google.maps.Marker({
-		position: coords,
-		map: map,
-		title: "Current location!"
-		});
-		}
-		
-</script>
+<script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
 </body>
 </html>
