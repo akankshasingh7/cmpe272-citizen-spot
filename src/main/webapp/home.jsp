@@ -37,7 +37,7 @@
 	      <li><a data-toggle="modal" href="#uploadModal" id="upload-menu" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Upload</a></li>
 	      <!-- <li class="custom-dpd"><a href="#about"><i class="fa fa-gear"></i> Settings</a></li> -->
 	
-	      <li class="logout"><a href="#contact" id="logout-menu"><i class="fa fa-power-off"></i> Logout</a></li>
+	      <li class="logout"><a href="<%=request.getContextPath()%>/rest/User/upload"" id="logout-menu"><i class="fa fa-power-off"></i> Logout</a></li>
 	      <li>
 	        <div class="demo"><span id="demo-setting"><i class="fa fa-cog txt-color-blueDark"></i></span></div>
 	      </li>

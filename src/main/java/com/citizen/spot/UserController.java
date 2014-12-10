@@ -103,6 +103,16 @@ public class UserController {
 		}
 	}
 	
+	@POST
+	@Path("logout")
+	public Viewable logout(@Context HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		session.removeAttribute("USER");
+		session.invalidate();
+		return new Viewable("/index.jsp", null);
+	}
+	
 	@GET
 	@Path("list")
 	@Produces(MediaType.APPLICATION_JSON)
