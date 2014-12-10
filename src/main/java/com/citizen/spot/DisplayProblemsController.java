@@ -5,17 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.JsonNodeFactory;
@@ -35,12 +32,13 @@ import com.citizen.spot.model.ProblemType;
  */
 @Path("/Problems")
 public class DisplayProblemsController {
+	
+	private static Logger logger = Logger.getLogger(DisplayProblemsController.class);
+	
 	public DisplayProblemsController() {
 
 	}
 
-	private static Logger logger = Logger
-			.getLogger(DisplayProblemsController.class);
 	private ObjectMapper mapper = new ObjectMapper();
 
 	/*
@@ -53,27 +51,26 @@ public class DisplayProblemsController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response displayTenProblemByZipcode(
 			@PathParam("zipcode") String zipcode) {
+		
 		logger.info(" \n--- zip code is ---- " + zipcode);
 		ProblemDAO problemDAO = new ProblemDAO();
 		try {
 			ArrayList<Problem> problemsListByZipcode = problemDAO
 					.displayTenProblemByZipcode(zipcode);
+			
 			logger.info(" --- size of list--- " + problemsListByZipcode.size());
 			return Response.status(200)
 					.entity(mapper.writeValueAsString(problemsListByZipcode))
 					.build();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 

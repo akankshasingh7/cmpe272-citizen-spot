@@ -56,7 +56,10 @@
 	</div>
 	<div class="row" id="thumbs">
 		
-		<div class="item" id="listOfProblems">
+			<%
+			for(int i=0; i<20; i++) {
+		%>
+		<div class="item">
 		  <div class="thumb">
 		    <div class="row rating-share">
 		      <span class="severity pull-left">
@@ -76,6 +79,9 @@
 		    </div>
 		  </div>
 		</div>
+		<%
+			}
+		%>
 		
 	</div>
 </div>
@@ -244,5 +250,78 @@
 <script src="<%=request.getContextPath()%>/js/bootstrap-datetimepicker.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
+<script>
+$(function(){
+	function getMarkersforZip(zip) {
+		var problemsArray = [];
+		console.log("zip- ",zip);
+		$.ajax({
+		    url : "<%=request.getContextPath()%>/rest/Problems/SearchByZipcode/00000",//+zip,
+		    type: "GET",
+		    dataType: 'json',
+		    success: function(data, textStatus, jqXHR)
+		    {	
+		    	var response = "";
+		    	var bigList = "";
+		    	console.log("problem resp 	data- ",data);
+		    	var i = 1;
+		    	data.forEach(function(entry) {
+		    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+entry.image+'"'+
+		    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.street+"  "+entry.city+'</small></h4><div class="post-date">'+new Date(entry.date)+'</div><p class="short-desc">'+entry.description+
+			            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
+			        bigList += '<div class="item"><div class="thumb"><div class="row rating-share"><span class="severity pull-left"><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i></span><span class="actions pull-right"><i class="fa fa-share-alt"></i></span></div><div class="row"><img src="'+entry.image+'"></div><div class="row"><p>'+entry.description+'<a data-toggle="modal" href="#myModal1" data-event-id="">more</a></p></div></div></div>';
+				    	
+			      var problemArr = [];
+			      problemArr.push(entry.problemName);
+			      problemArr.push(entry.latitude);
+			      problemArr.push(entry.longitude);
+			      problemArr.push(i++);
+			      problemsArray.push(problemArr);
+		    	});
+		    	
+		        console.log("problemsArray- ",problemsArray);
+		        $("#thumbs").html(bigList);
+		        $(".media").html(response);
+		     	var map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
+	     	      zoom: 10,
+	     	      center: new google.maps.LatLng(37.3571342, -121.96100820000001),
+	     	      mapTypeId: google.maps.MapTypeId.ROADMAP
+	     	    });
+		  	
+		  	    var infowindow = new google.maps.InfoWindow();
+		  	    var marker, i;
+		  	
+		  	    for (i = 0; i < problemsArray.length; i++) {  
+		  	      marker = new google.maps.Marker({
+		  	        position: new google.maps.LatLng(problemsArray[i][1], problemsArray[i][2]),
+		  	        map: map
+		  	      });
+		  	
+		  	      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+		  	        return function() {
+		  	          infowindow.setContent(problemsArray[i][0]);
+		  	          infowindow.open(map, marker);
+		  	        }
+		  	      })(marker, i));
+		  	    }
+		    },
+		    error: function (jqXHR, textStatus, errorThrown)
+		    {	
+		    	console.log("jqXHR- ",jqXHR);
+		        $("#errorMsg").html("No data fetched!");
+		   
+		    }
+		});
+	}
+	
+ 	var map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
+      zoom: 10,
+      center: new google.maps.LatLng(37.3571342, -121.96100820000001),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+	console.log("here- ");
+	getMarkersforZip("95051");
+});
+</script>
 </body>
 </html>

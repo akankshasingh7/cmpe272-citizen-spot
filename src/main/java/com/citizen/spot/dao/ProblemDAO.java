@@ -137,6 +137,10 @@ public class ProblemDAO {
 		Connection connection = dataSource.getConnection();
 		Statement statement = connection.createStatement();
 		String sql = "select * from problem where zipcode="+zipcode+" order by count desc limit 10";
+		if(zipcode.equals("00000")){
+			sql = "select * from problem order by count desc limit 10";
+		}
+		
 		logger.info(" \n  ----- query is ---"+sql);
 		ResultSet rs = statement.executeQuery(sql);
 		
@@ -150,15 +154,17 @@ public class ProblemDAO {
 			problem.setTypeId(rs.getInt("type_id"));
 			problem.setProblemName(rs.getString("problem_name"));
 			problem.setDescription(rs.getString("description"));
+			problem.setImage(rs.getString("image"));
+			problem.setDate(rs.getTimestamp("date"));
 			problem.setSideOfRoad(rs.getString("side_of_road"));
 			problem.setSeverity(rs.getInt("severity"));
-			problem.setLatitude(rs.getFloat("latitude"));
-			problem.setLongitude(rs.getFloat("longitude"));
-			problem.setState(rs.getString("street"));
-			problem.setState(rs.getString("state"));
-			problem.setAddressLine(rs.getString("address_line"));
+			problem.setLatitude(rs.getDouble("latitude"));
+			problem.setLongitude(rs.getDouble("longitude"));
+			problem.setStreet(rs.getString("street"));
 			problem.setCity(rs.getString("city"));
-			problem.setImage(rs.getString("image"));
+			problem.setState(rs.getString("state"));
+			problem.setZipcode(rs.getString("zipcode"));
+			problem.setUploadedBy(rs.getString("uploaded_by"));
 			problemsList.add(problem);
 		} 
 		rs.close();

@@ -38,6 +38,8 @@ public class IncidentController {
 			@FormDataParam("problemType") int problemType,
 			@FormDataParam("problem-date") Timestamp date,
 			@FormDataParam("side-of-road") String sideOfRoad,
+			@FormDataParam("latitude") String latitude,
+			@FormDataParam("longitude") String longitude,
 			@FormDataParam("street") String street,
 			@FormDataParam("city") String city,
 			@FormDataParam("state") String state,
@@ -60,8 +62,8 @@ public class IncidentController {
 			problem.setSideOfRoad(sideOfRoad);
 			
 			problem.setSeverity(severity);
-			problem.setLatitude(0.0);
-			problem.setLongitude(0.0);
+			problem.setLatitude(Double.parseDouble(latitude));
+			problem.setLongitude(Double.parseDouble(longitude));
 			problem.setStreet(street);
 			problem.setCity(city);
 			problem.setState(state);

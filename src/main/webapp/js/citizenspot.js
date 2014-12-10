@@ -1,5 +1,5 @@
 $(function () {
-	listProblems();
+	//listProblems();
 	$('#problem-date').datetimepicker({
 		format:	'YYYY-MM-DD hh:mm:ss'
 	});
@@ -14,16 +14,30 @@ $(function () {
 		alert("Geolocation API not supported.");
 	}
 	
-	var bar = $('.bar');
-	var percent = $('.percent');
-	var status = $('#status');
-	   
+//	var bar = $('.bar');
+//	var percent = $('.percent');
+//	var status = $('#status');
+
+	function placeMultiMarkers(address) {
+		$.ajax({
+			url : "http://maps.googleapis.com/maps/api/geocode/json?address="+address+"&sensor=false",
+		    method: "POST",
+		    success:function(data){
+		        var latLong = {};
+		        latLong.latitude = data.results[0].geometry.location.lat;
+		        latLong.longitude = data.results[0].geometry.location.lng;
+		        return latLong;
+			}
+        });
+	}
+	
 	$('#upload-form').ajaxForm({
-	    beforeSend: function() {
-	        status.empty();
-	        var percentVal = '0%';
-	        bar.width(percentVal)
-	        percent.html(percentVal);
+	    beforeSend: function(formData, jqForm, options) {
+	    	console.log("formData- ",formData);
+	    	var latLong = placeMultiMarkers(address);
+	    	$('#latitude').val(latLong.latitude);
+	    	$('#longitude').val(latLong.longitude);
+	    	formData.push(placeMultiMarkers(address));
 	        $(".progress").show();
 	    },
 	    success: function() {
@@ -96,7 +110,8 @@ function listProblems() {
 	    url : "rest/Problems/listProblems",
 	    type: "GET",
 	    success: function(data, textStatus, jqXHR)
-	    {	console.log(data);
+	    {
+	    	console.log(data);
 	    	var response = "";
 	    	data.forEach(function(entry) {
 		    	var val=entry.severity;
