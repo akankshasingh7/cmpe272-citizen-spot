@@ -103,7 +103,7 @@ public class UserController {
 		}
 	}
 	
-	@POST
+	@GET
 	@Path("logout")
 	public Viewable logout(@Context HttpServletRequest request) {
 
