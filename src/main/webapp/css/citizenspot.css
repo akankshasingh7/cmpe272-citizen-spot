@@ -130,3 +130,18 @@ body{
 	display: none;
 	height: 40px;
 }
+
+#chartModal .modal-dialog {
+	width: 700px;
+}
+
+#chartModal .axis {
+   font: 10px sans-serif;
+ }
+
+ #chartModal .axis path,
+ #chartModal .axis line {
+   fill: none;
+   stroke: #000;
+   shape-rendering: crispEdges;
+ }

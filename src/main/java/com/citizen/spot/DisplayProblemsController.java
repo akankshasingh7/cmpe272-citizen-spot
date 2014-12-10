@@ -20,9 +20,8 @@ import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.citizen.spot.dao.ProblemDAO;
-import com.citizen.spot.model.ChartCityList;
 import com.citizen.spot.model.ChartList;
-import com.citizen.spot.model.ChartZipList;
+import com.citizen.spot.model.KeyValue;
 import com.citizen.spot.model.Problem;
 import com.citizen.spot.model.ProblemType;
 
@@ -200,8 +199,8 @@ public class DisplayProblemsController {
 
 		ProblemDAO problemDAO = new ProblemDAO();
 		try {
-			ArrayList<ChartZipList> chartZipValues = problemDAO.getProblemByZip();
-			ArrayList<ChartCityList> chartCityValues = problemDAO.getProblemByCity();
+			ArrayList<KeyValue> chartZipValues = problemDAO.getProblemByZip();
+			ArrayList<KeyValue> chartCityValues = problemDAO.getProblemByCity();
 			JsonNodeFactory nodeFactory = mapper.getNodeFactory();
 			ObjectNode node = nodeFactory.objectNode();
 			node.put("zip", mapper.writeValueAsString(chartZipValues));

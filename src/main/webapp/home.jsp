@@ -33,7 +33,7 @@
 	          <b class="badge bg-color-red bounceIn animated"> 21 </b>
 	        </span>
 	      </li>
-	      <li><a data-toggle="modal" href="#chartModal" id="chart-menu" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Chart</a></li>
+	      <li><a data-toggle="modal" id="chart-menu" data-event-id=""><i class="glyphicon glyphicon-tasks"></i> Chart</a></li>
 	      <li><a data-toggle="modal" href="#uploadModal" id="upload-menu" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Upload</a></li>
 	      <!-- <li class="custom-dpd"><a href="#about"><i class="fa fa-gear"></i> Settings</a></li> -->
 	
@@ -254,10 +254,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i></button>
-        <h4 class="modal-title">Problem Charts</h4>
+        <h4 class="modal-title">Comparison Charts</h4>
       </div>
       <div class="modal-body">
-			
+      		<h4>By Zip</h4>
+			<div class=".col-md-12" id="zip-chart"></div>
+      		<h4>By City</h4>
+			<div class=".col-md-6" id="city-chart"></div>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -271,14 +274,14 @@
 <script src="<%=request.getContextPath()%>/js/bootstrap-datetimepicker.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
-<%-- <script src="<%=request.getContextPath()%>/js/apptour.js"></script> --%>
+<script src="<%=request.getContextPath()%>/js/d3.v3.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/chart.js"></script>
 <script>
 $(function(){
 	function getMarkersforZip(zip) {
 		var problemsArray = [];
-		console.log("zip- ",zip);
 		$.ajax({
-		    url : "<%=request.getContextPath()%>/rest/Problems/SearchByZipcode/94041",//+zip,
+		    url : "<%=request.getContextPath()%>/rest/Problems/SearchByZipcode/"+zip,
 		    type: "GET",
 		    dataType: 'json',
 		    success: function(data, textStatus, jqXHR)
@@ -336,10 +339,32 @@ $(function(){
       center: new google.maps.LatLng(37.3571342, -121.96100820000001),
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-	console.log("here- ");
-	getMarkersforZip("95051");
+	getMarkersforZip("94041");
 });
 </script>
 
+<script>
+$(function(){
+	$("#chart-menu").click(function(){
+		$.ajax({
+		    url : "<%=request.getContextPath()%>/rest/Problems/chartByZip",
+		    type: "GET",
+		    dataType: 'json',
+		    success: function(data, textStatus, jqXHR)
+		    {	
+		    	console.log("data- ",data);
+				drawChart(JSON.parse(data.zip), "#zip-chart");
+				drawChart(JSON.parse(data.city), "#city-chart");
+				$("#chartModal").modal("toggle");
+		    },
+		    error: function (jqXHR, textStatus, errorThrown)
+		    {	
+		    	console.log("jqXHR- ",jqXHR);
+		        //$("#errorMsg").html("No data fetched!");
+		    }
+		});
+	});
+});
+</script>
 </body>
 </html>
