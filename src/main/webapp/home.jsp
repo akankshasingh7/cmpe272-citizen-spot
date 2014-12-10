@@ -6,6 +6,7 @@
 <title>CitizenSpot</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap.min.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap-tour.min.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/citizenspot.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/menu.css">
 <body>
@@ -18,7 +19,7 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" placeholder= "search by address or ZIP"> <!--manami-->
+	      <input type="text" class="form-control" placeholder= "search by address or ZIP">
 	      <span class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>
@@ -32,11 +33,11 @@
 	          <b class="badge bg-color-red bounceIn animated"> 21 </b>
 	        </span>
 	      </li>
-	      <li><a data-toggle="modal" href="#chartModal" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Chart</a></li>
-	      <li><a data-toggle="modal" href="#uploadModal" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Upload</a></li>
+	      <li><a data-toggle="modal" href="#chartModal" id="chart-menu" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Chart</a></li>
+	      <li><a data-toggle="modal" href="#uploadModal" id="upload-menu" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i> Upload</a></li>
 	      <!-- <li class="custom-dpd"><a href="#about"><i class="fa fa-gear"></i> Settings</a></li> -->
 	
-	      <li class="logout"><a href="#contact"><i class="fa fa-power-off"></i> Logout</a></li>
+	      <li class="logout"><a href="#contact" id="logout-menu"><i class="fa fa-power-off"></i> Logout</a></li>
 	      <li>
 	        <div class="demo"><span id="demo-setting"><i class="fa fa-cog txt-color-blueDark"></i></span></div>
 	      </li>
@@ -264,9 +265,12 @@
 <script src="<%=request.getContextPath()%>/js/jquery-2.1.1.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/bootstrap-tour.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/moment.js"></script>
 <script src="<%=request.getContextPath()%>/js/bootstrap-datetimepicker.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="<%=request.getContextPath()%>/js/citizenspot.js"></script>
+<script src="<%=request.getContextPath()%>/js/apptour.js"></script>
+
 </body>
 </html>
