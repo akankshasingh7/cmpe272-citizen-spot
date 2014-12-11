@@ -10,6 +10,8 @@
 		username="root"
 		password="password" 
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost:3306/citizenspot" />
+		url="jdbc:mysql://localhost:3306/citizenspot" 
+    	validationQuery="SELECT COUNT(*) FROM problem"
+    	factory="org.apache.commons.dbcp.BasicDataSourceFactory"/>
 
 </Context>

@@ -3,16 +3,6 @@ $(function () {
 	$('#problem-date').datetimepicker({
 		format:	'YYYY-MM-DD hh:mm:ss'
 	});
-
-	var geocoder;
-	if (navigator.geolocation)
-	{
-		navigator.geolocation.getCurrentPosition(showCurrentLocation);
-	}
-	else
-	{
-		console.log("Geolocation API not supported.");
-	}
 	
 	$( "#street" ).bind( "blur", function() {
 		placeMultiMarkers();
@@ -29,9 +19,6 @@ $(function () {
 	$( "#zip" ).bind( "blur", function() {
 		placeMultiMarkers();
 	});
-//	var bar = $('.bar');
-//	var percent = $('.percent');
-//	var status = $('#status');
 
 	function placeMultiMarkers() {
 		var address = $("#street").val()+", "+$("#city").val()+", "+$("#state").val()+", "+$("#country").val()+", "+$("#zip").val();
@@ -68,31 +55,7 @@ $(function () {
 	});
 });
 
-function showCurrentLocation(position)
-{
-	var latitude = position.coords.latitude;
-	var longitude = position.coords.longitude;
-	var coords = new google.maps.LatLng(latitude, longitude);
-	codeLatLng(coords);
-	var mapOptions = {
-		zoom: 15,
-		center: coords,
-		mapTypeControl: true,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
-	};
 
-	//create the map, and place it in the HTML map div
-	map = new google.maps.Map(
-		document.getElementById("mapPlaceholder"), mapOptions
-	);
-
-	//place the initial marker
-	var marker = new google.maps.Marker({
-		position: coords,
-		map: map,
-		title: "Current location!"
-	});
-}
 function codeLatLng(coords) {
 	geocoder = new google.maps.Geocoder();
 	geocoder.geocode({'latLng': coords}, function(results, status) {

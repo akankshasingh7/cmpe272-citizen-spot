@@ -197,6 +197,8 @@ public class ProblemDAO {
 			problem.setAddressLine(rs.getString("address_line"));
 			problem.setCity(rs.getString("city"));
 			problem.setImage(rs.getString("image"));
+			problem.setZipcode(rs.getString("zipcode"));
+			problem.setUploadedBy(rs.getString("uploaded_by"));
 		} 
 		rs.close();
 		statement.close();

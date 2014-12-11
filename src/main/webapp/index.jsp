@@ -190,20 +190,18 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i></button>
-        <h4 class="modal-title" id="displayProblemName">Title</h4>
+        <h4 class="modal-title" id="displayProblemName"></h4>
       </div>
       <div class="modal-body">
 				<div class="row">
-					<div class="col-md-6"><img height="150" width="150" id="problemImage" ></div>
-					<div class="col-md-6">
-						<div><span class="col-label">Location: </span><span id="problemLocationValue" class="col-value">asds</span></div>
-						<div><span class="col-label">Uploaded on: </span><span id="problemDateValue" class="col-value">asds</span></div>
-						<div><span class="col-label">Severity: </span><span id="problemSeverityValue" class="col-value">asds</span></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<p id="problemDescriptionValue"> This is an uploaded problem </p>
+					<div class="col-md-4"><img height="150" width="150" id="problemImage" ></div>
+					<div class="col-md-8">
+						<div><span class="col-label">Location: </span><span id="problemLocationValue" class="col-value"></span></div>
+						<div><span class="col-label">Uploaded on: </span><span id="problemDateValue" class="col-value"></span></div>
+						<div><span class="col-label">Severity: </span><span id="problemSeverityValue" class="col-value"></span></div>
+						<div><span class="col-label">Zip: </span><span id="problemZip" class="col-value"></span></div>
+						<div><span class="col-label">City: </span><span id="problemCity" class="col-value"></span></div><br/>
+						<div><p id="problemDescriptionValue"> This is an uploaded problem </p></div>
 					</div>
 				</div>
       </div>
@@ -282,18 +280,17 @@ $(function(){
 		    }
 		});
 	}
-	
+/* 	
  	var map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
       zoom: 10,
       center: new google.maps.LatLng(37.3571342, -121.96100820000001),
       mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
+    }); */
 	console.log("here- ");
 	getMarkersforZip("00000");
 	$( "#submitSearchValue" ).bind( "click", function() {
 		var zip = $("#searchValue").val().trim();
 		if(zip !== "" ) {
-			
 			getMarkersforZip(zip);
 		}
 	});
@@ -306,12 +303,14 @@ function fetchProblemDetails(value) {
 	    type: "GET",
 	    dataType: 'json',
 	    success: function(data, textStatus, jqXHR)
-	    { 	console.log(data);
+	    { 	console.log("data by id-  ",data);
 	    	$("#displayProblemName").html(data.problemName);
 	    	$("#problemLocationValue").html(data.street);
 	    	$("#problemDateValue").html(new Date(data.date));
 	    	$("#problemSeverityValue").html(data.severity);
 	    	$("#problemDescriptionValue").html(data.description);
+	    	$("#problemZip").html(data.zipcode);
+	    	$("#problemCity").html(data.city);
 	    	var str = data.image;
 	    	console.log(str);
 	    	$("#problemImage").attr('src',str);
