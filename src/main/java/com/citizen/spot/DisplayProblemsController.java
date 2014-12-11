@@ -93,17 +93,14 @@ public class DisplayProblemsController {
 			return Response.status(200)
 					.entity(mapper.writeValueAsString(problemById)).build();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 
@@ -121,17 +118,14 @@ public class DisplayProblemsController {
 			return Response.status(200)
 					.entity(mapper.writeValueAsString(problemTypes)).build();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 	}
@@ -148,17 +142,14 @@ public class DisplayProblemsController {
 			return Response.status(200)
 					.entity(mapper.writeValueAsString(problem)).build();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 	}
@@ -177,17 +168,14 @@ public class DisplayProblemsController {
 			return Response.status(200)
 					.entity(mapper.writeValueAsString(chartValues)).build();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return Response.status(500).entity(e.getMessage()).build();
 		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Response.status(500).entity("failed").build();
 	}

@@ -19,8 +19,8 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" placeholder= "search by address or ZIP">
-	      <span class="input-group-addon search-icon glyphicon glyphicon-search"></span>
+	      <input type="text" class="form-control" id="searchValue" placeholder= "search by address or ZIP">
+	      <span id="submitSearchValue" class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>
 	  <div class="navbar-collapse collapse">
@@ -54,51 +54,13 @@
 			<div id="local-spot-list">
 				<div class="section-heading">Recent incidents near your current location</div>
 				<div class="incident-list">
-				
 				  <div class="media">
-				      <a href="#" class="pull-left">
-				          <img src="<%=request.getContextPath()%>/images/problems/pothole1.jpg" class="thumb-pic" alt="Sample Image">
-				      </a>
-				      <div class="media-body">
-				          <h4>Pothole <small>i280 & Central Exp.</small></h4>
-				          <div class="post-date">Posted on: January 10, 2014</div>
-				          <p class="short-desc">A big pothole and water logging near San J.....
-				            <a data-toggle="modal" href="#bigViewModal" data-event-id="">more</a></p>
-				      </div>
 				  </div>
-				  <hr/>
-				
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row" id="thumbs">
-		<%
-			for(int i=0; i<20; i++) {
-		%>
-		<div class="item">
-		  <div class="thumb">
-		    <div class="row rating-share">
-		      <span class="severity pull-left">
-		        <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-		        <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i>
-		        <i class="glyphicon glyphicon-star-empty"></i>
-		      </span>
-		      <span class="actions pull-right"><i class="fa fa-share-alt"></i></span>
-		    </div>
-		    <div class="row">
-		      <img src="<%=request.getContextPath()%>/images/problems/pothole1_bg.jpg">
-		    </div>
-		    <div class="row">
-		      <p>blah blah blah blah blah blah blah blah blah blah blah blahblah b.....
-		        <a data-toggle="modal" href="#myModal1" data-event-id="">more</a>
-		      </p>
-		    </div>
-		  </div>
-		</div>
-		<%
-			}
-		%>
 	</div>
 </div>
 <footer></footer>
@@ -219,28 +181,20 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i></button>
-        <h4 class="modal-title">Title</h4>
+        <h4 class="modal-title" id="displayProblemName">Title</h4>
       </div>
       <div class="modal-body">
 				<div class="row">
-					<div class="col-md-6"><img src="<%=request.getContextPath()%>/images/problems/pothole1_bg.jpg"></div>
+					<div class="col-md-6"><img height="150" width="150" id="problemImage" ></div>
 					<div class="col-md-6">
-						<div><span class="col-label">Location: </span><span class="col-value">asds</span></div>
-						<div><span class="col-label">Uploaded on: </span><span class="col-value">asds</span></div>
-						<div><span class="col-label">Uploaded by: </span><span class="col-value">asds</span></div>
-						<div><span class="col-label">Comment: </span><span class="col-value">asds</span></div>
+						<div><span class="col-label">Location: </span><span id="problemLocationValue" class="col-value">asds</span></div>
+						<div><span class="col-label">Uploaded on: </span><span id="problemDateValue" class="col-value">asds</span></div>
+						<div><span class="col-label">Severity: </span><span id="problemSeverityValue" class="col-value">asds</span></div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<p> Description , big description big description big description big description big description
-							big description big description big description
-							big description big description big description big description big description big description
-							big description big description
-							big description big description big description big description big description big description big description big description
-							big description big description big description big description big description big description
-							big description big description big description big description big description big description
-							big description big description big description big description big description big description</p>
+						<p id="problemDescriptionValue"> This is an uploaded problem </p>
 					</div>
 				</div>
       </div>
@@ -287,20 +241,27 @@ $(function(){
 		    success: function(data, textStatus, jqXHR)
 		    {	
 		    	var response = "";
+		    	var bigList = "";
 		    	console.log("problem resp 	data- ",data);
 		    	var i = 1;
 		    	data.forEach(function(entry) {
 		    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+entry.image+'"'+
 		    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.street+"  "+entry.city+'</small></h4><div class="post-date">'+new Date(entry.date)+'</div><p class="short-desc">'+entry.description+
-			            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
-			      var problemArr = [];
-			      problemArr.push(entry.problemName);
-			      problemArr.push(entry.latitude);
-			      problemArr.push(entry.longitude);
-			      problemArr.push(i++);
-			      problemsArray.push(problemArr);
+			            '<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div> <hr/>';
+			        
+					bigList += '<div class="item"><div class="thumb"><div class="row rating-share">'+
+								'<span class="severity pull-left"><div class="progress"><div class="progress-bar" style="width: '+(entry.severity * 20)+'%;"><span class="sr-only">&nbsp;</span></div></div></span>'+
+								'<span class="actions pull-right"><i class="fa fa-share-alt"></i></span></div><div class="row"><img src="'+entry.image+'"></div><div class="row"><p>'+
+								entry.description+'<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div></div></div>';
+										    
+					var problemArr = [];
+					problemArr.push(entry.problemName);
+					problemArr.push(entry.latitude);
+					problemArr.push(entry.longitude);
+					problemArr.push(i++);
+					problemsArray.push(problemArr);
 		    	}); 
-		        console.log("problemsArray- ",problemsArray);
+		        $("#thumbs").html(bigList);
 		        $(".media").html(response);
 		     	var map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
 	     	      zoom: 10,
@@ -339,7 +300,14 @@ $(function(){
       center: new google.maps.LatLng(37.3571342, -121.96100820000001),
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-	getMarkersforZip("94041");
+	getMarkersforZip("00000");
+	$( "#submitSearchValue" ).bind( "click", function() {
+		var zip = $("#searchValue").val().trim();
+		if(zip !== "" ) {
+			
+			getMarkersforZip(zip);
+		}
+	});
 });
 </script>
 
@@ -352,7 +320,6 @@ $(function(){
 		    dataType: 'json',
 		    success: function(data, textStatus, jqXHR)
 		    {	
-		    	console.log("data- ",data);
 				drawChart(JSON.parse(data.zip), "#zip-chart");
 				drawChart(JSON.parse(data.city), "#city-chart");
 				$("#chartModal").modal("toggle");
@@ -365,6 +332,32 @@ $(function(){
 		});
 	});
 });
+
+function fetchProblemDetails(value) {
+	$("#successSearch").html();
+	$.ajax({
+	    url : "<%=request.getContextPath()%>/rest/Problems/listById/"+value,
+	    type: "GET",
+	    dataType: 'json',
+	    success: function(data, textStatus, jqXHR)
+	    { 	console.log(data);
+	    	$("#displayProblemName").html(data.problemName);
+	    	$("#problemLocationValue").html(data.street);
+	    	$("#problemDateValue").html(new Date(data.date));
+	    	$("#problemSeverityValue").html(data.severity);
+	    	$("#problemDescriptionValue").html(data.description);
+	    	var str = data.image;
+	    	console.log(str);
+	    	$("#problemImage").attr('src',str);
+	    },
+	    error: function (jqXHR, textStatus, errorThrown)
+	    {
+	    	console.log(data);
+	        $("#errorMsg").html("No data fetched!");
+	   
+	    }
+	});
+}
 </script>
 </body>
 </html>

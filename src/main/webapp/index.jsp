@@ -18,7 +18,7 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP or problem"> <!--manami-->
+	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP or problem">
 	      <span id="submitSearchValue" class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>
@@ -29,7 +29,7 @@
 	      <li><a data-toggle="modal" href="#loginModal" data-event-id=""><i class="glyphicon glyphicon-log-in"></i> Login to upload a problem</a></li>
 	      <li><a data-toggle="modal" href="#registerModal" data-event-id=""><i class="glyphicon glyphicon-cloud-upload"></i>Register</a></li>
 	      <li>
-	      <!--  <div class="demo"><span id="demo-setting"><i class="fa fa-cog txt-color-blueDark"></i></span></div> -->
+	      	&nbsp;
 	      </li>
 	    </ul>
 	  </div>
@@ -44,46 +44,13 @@
 			<div id="local-spot-list">
 				<div class="section-heading">Recent incidents near your current location</div>
 				<div class="incident-list">
-				
 				  <div class="media">
-				      				     
 				  </div>
-				  <hr/>
-				
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row" id="thumbs">
-		
-			<%
-			for(int i=0; i<20; i++) {
-		%>
-		<div class="item">
-		  <div class="thumb">
-		    <div class="row rating-share">
-		      <span class="severity pull-left">
-		        <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-		        <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i>
-		        <i class="glyphicon glyphicon-star-empty"></i>
-		      </span>
-		      <span class="actions pull-right"><i class="fa fa-share-alt"></i></span>
-		    </div>
-		    <div class="row">
-		      <img src="<%=request.getContextPath()%>/images/problems/pothole1_bg.jpg">
-		    </div>
-		    <div class="row">
-		      <p>blah blah blah blah blah blah blah blah blah blah blah blahblah b.....
-		        <a data-toggle="modal" href="#myModal1" data-event-id="">more</a>
-		      </p>
-		    </div>
-		  </div>
-		</div>
-		<%
-			}
-		%>
-		
-	</div>
+	<div class="row" id="thumbs"></div>
 </div>
 <footer></footer>
 
@@ -256,7 +223,7 @@ $(function(){
 		var problemsArray = [];
 		console.log("zip- ",zip);
 		$.ajax({
-		    url : "<%=request.getContextPath()%>/rest/Problems/SearchByZipcode/00000",//+zip,
+		    url : "<%=request.getContextPath()%>/rest/Problems/SearchByZipcode/"+zip,
 		    type: "GET",
 		    dataType: 'json',
 		    success: function(data, textStatus, jqXHR)
@@ -268,8 +235,10 @@ $(function(){
 		    	data.forEach(function(entry) {
 		    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+entry.image+'"'+
 		    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.street+"  "+entry.city+'</small></h4><div class="post-date">'+new Date(entry.date)+'</div><p class="short-desc">'+entry.description+
-			            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
-			        bigList += '<div class="item"><div class="thumb"><div class="row rating-share"><span class="severity pull-left"><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i></span><span class="actions pull-right"><i class="fa fa-share-alt"></i></span></div><div class="row"><img src="'+entry.image+'"></div><div class="row"><p>'+entry.description+'<a data-toggle="modal" href="#myModal1" data-event-id="">more</a></p></div></div></div>';
+			            '<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div> <hr/>';
+			        bigList += '<div class="item"><div class="thumb"><div class="row rating-share"><span class="severity pull-left">'+
+			        '</span><span class="actions pull-right"><i class="fa fa-share-alt"></i></span></div><div class="row"><img src="'+entry.image+'"></div><div class="row"><p>'+
+			        entry.description+'<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div></div></div>';
 				    	
 			      var problemArr = [];
 			      problemArr.push(entry.problemName);
@@ -279,7 +248,7 @@ $(function(){
 			      problemsArray.push(problemArr);
 		    	});
 		    	
-		        console.log("problemsArray- ",problemsArray);
+		        //console.log("problemsArray- ",problemsArray);
 		        $("#thumbs").html(bigList);
 		        $(".media").html(response);
 		     	var map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
@@ -320,8 +289,41 @@ $(function(){
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 	console.log("here- ");
-	getMarkersforZip("95051");
+	getMarkersforZip("00000");
+	$( "#submitSearchValue" ).bind( "click", function() {
+		var zip = $("#searchValue").val().trim();
+		if(zip !== "" ) {
+			
+			getMarkersforZip(zip);
+		}
+	});
 });
+
+function fetchProblemDetails(value) {
+	$("#successSearch").html();
+	$.ajax({
+	    url : "<%=request.getContextPath()%>/rest/Problems/listById/"+value,
+	    type: "GET",
+	    dataType: 'json',
+	    success: function(data, textStatus, jqXHR)
+	    { 	console.log(data);
+	    	$("#displayProblemName").html(data.problemName);
+	    	$("#problemLocationValue").html(data.street);
+	    	$("#problemDateValue").html(new Date(data.date));
+	    	$("#problemSeverityValue").html(data.severity);
+	    	$("#problemDescriptionValue").html(data.description);
+	    	var str = data.image;
+	    	console.log(str);
+	    	$("#problemImage").attr('src',str);
+	    },
+	    error: function (jqXHR, textStatus, errorThrown)
+	    {
+	    	console.log(data);
+	        $("#errorMsg").html("No data fetched!");
+	   
+	    }
+	});
+}
 </script>
 </body>
 </html>

@@ -47,7 +47,7 @@ public class ImageUtil {
 	
 	public static void main(String[] a) {
 		
-		File file = new File("/Users/bonnie/Desktop/mach.jpg");
+		File file = new File("/Users/bonnie/Desktop/problems/pothole2_bg.jpg");
 		Map uploadResult = uploadImage(file, CitizenSpotUtil.getUUID());
 		System.out.println(uploadResult.get("url").toString());
 	}

@@ -11,21 +11,40 @@ $(function () {
 	}
 	else
 	{
-		alert("Geolocation API not supported.");
+		console.log("Geolocation API not supported.");
 	}
 	
+	$( "#street" ).bind( "blur", function() {
+		placeMultiMarkers();
+	});
+	$( "#city" ).bind( "blur", function() {
+		placeMultiMarkers();
+	});
+	$( "#state" ).bind( "blur", function() {
+		placeMultiMarkers();
+	});
+	$( "#country" ).bind( "blur", function() {
+		placeMultiMarkers();
+	});
+	$( "#zip" ).bind( "blur", function() {
+		placeMultiMarkers();
+	});
 //	var bar = $('.bar');
 //	var percent = $('.percent');
 //	var status = $('#status');
 
-	function placeMultiMarkers(address) {
+	function placeMultiMarkers() {
+		var address = $("#street").val()+", "+$("#city").val()+", "+$("#state").val()+", "+$("#country").val()+", "+$("#zip").val();
 		$.ajax({
 			url : "http://maps.googleapis.com/maps/api/geocode/json?address="+address+"&sensor=false",
 		    method: "POST",
 		    success:function(data){
 		        var latLong = {};
+		        console.log("data- ",data);
 		        latLong.latitude = data.results[0].geometry.location.lat;
 		        latLong.longitude = data.results[0].geometry.location.lng;
+		    	$('#latitude').val(latLong.latitude);
+		    	$('#longitude').val(latLong.longitude);
 		        return latLong;
 			}
         });
@@ -34,18 +53,12 @@ $(function () {
 	$('#upload-form').ajaxForm({
 	    beforeSend: function(formData, jqForm, options) {
 	    	console.log("formData- ",formData);
-	    	var latLong = placeMultiMarkers(address);
-	    	$('#latitude').val(latLong.latitude);
-	    	$('#longitude').val(latLong.longitude);
-	    	formData.push(placeMultiMarkers(address));
 	        $(".progress").show();
 	    },
 	    success: function() {
-	        var percentVal = '100%';
-	        bar.width(percentVal)
-	        percent.html(percentVal);
 	        $(".progress").hide();
 	        $("#uploadModal").modal("hide");
+	        getMarkersforZip("94041");
 	    },
 		complete: function(xhr) {
 			status.html(xhr.responseText);
@@ -95,10 +108,10 @@ function codeLatLng(coords) {
 		    	}
 				funCurrentLocationProblems(currentZipcode);
          	} else {
-        		alert('No results found');
+         		console.log('No results found');
       		}
     	} else {
-    		alert('Geocoder failed due to: ' + status);
+    		console.log('Geocoder failed due to: ' + status);
     	}
 	});
 }
@@ -163,7 +176,7 @@ $("#submitSearchValue").click(function(event){
 	    	data.forEach(function(entry) {
 	    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+entry.image+'"'+
 	    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+'</small></h4><div class="post-date">'+entry.city+'</div><p class="short-desc">'+entry.description+
-		            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
+		            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id=""> ...more</a></p></div> <hr/>';
 		      
 	    	}); 
 			}else
@@ -174,38 +187,13 @@ $("#submitSearchValue").click(function(event){
 	    },
 	    error: function (jqXHR, textStatus, errorThrown)
 	    {	
-	    	console.log(data);
+	    	console.log(jqXHR);
 	        $("#errorMsg").html("No data fetched!");
 	   
 	    }
 	});
 });
 
-function fun(value) {
-	$("#successSearch").html();
-	$.ajax({
-	    url : "rest/Problems/listById/"+value,
-	    type: "GET",
-	    dataType: 'json',
-	    success: function(data, textStatus, jqXHR)
-	    { 	console.log(data);
-	    	$("#displayProblemName").html(data.problemName);
-	    	$("#problemLocationValue").html(data.addressLine+" "+data.street);
-	    	$("#problemDateValue").html(data.date);
-	    	$("#problemSeverityValue").html(data.severity);
-	    	$("#problemDescriptionValue").html(data.description);
-	    	var str = data.image;
-	    	alert(str);
-	    	$("#problemImage").attr('src',str);
-	    },
-	    error: function (jqXHR, textStatus, errorThrown)
-	    {
-	    	console.log(data);
-	        $("#errorMsg").html("No data fetched!");
-	   
-	    }
-});
-}
 function funCurrentLocationProblems(currentZip)
 {
 	$.ajax({
@@ -221,7 +209,7 @@ function funCurrentLocationProblems(currentZip)
 	    	data.forEach(function(entry) {
 	    		response += '<a href="#" class="pull-left"><img height="75" width="75" src="'+entry.image+'"'+
 	    		'class="thumb-pic" alt="Sample Image"></a><a href="#" class="pull-left"></a><div class="media-body"><h4>'+entry.problemName+'<small>'+entry.addressLine+"  "+entry.city+'</small></h4><div class="post-date">'+entry.date+'</div><p class="short-desc">'+entry.description+
-		            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id="">more</a></p></div> <hr/>';
+		            '<a data-toggle="modal" href="#bigViewModal" onclick="fun('+entry.id+')" data-event-id=""> ...more</a></p></div> <hr/>';
 		      
 	    	}); 
 		}

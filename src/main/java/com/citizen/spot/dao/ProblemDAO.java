@@ -85,7 +85,7 @@ public class ProblemDAO {
 			problemType.setName(rs.getString("name"));
 			problemType.setDescription(rs.getString("description"));
 			problems.add(problemType);
-			System.out.print(" problem type name "+i+" is "+problemType.getName()+" description is "+problemType.getDescription());
+			logger.info(" problem type name "+i+" is "+problemType.getName()+" description is "+problemType.getDescription());
 			
 			
 		}
@@ -115,12 +115,11 @@ public class ProblemDAO {
 			problem.setSeverity(rs.getInt("severity"));
 			problem.setLatitude(rs.getFloat("latitude"));
 			problem.setLongitude(rs.getFloat("longitude"));
-			problem.setState(rs.getString("street"));
+			problem.setStreet(rs.getString("street"));
 			problem.setState(rs.getString("state"));
-			problem.setAddressLine(rs.getString("address_line"));
 			problem.setCity(rs.getString("city"));
 			problem.setImage(rs.getString("image"));
-			System.out.print(" problem  name "+i+" is "+problem.getProblemName()+" description is "+problem.getDescription());
+			logger.info(" problem  name "+i+" is "+problem.getProblemName()+" description is "+problem.getDescription());
 			
 			problems.add(problem);
 		}
@@ -191,13 +190,13 @@ public class ProblemDAO {
 			problem.setSideOfRoad(rs.getString("side_of_road"));
 			problem.setSeverity(rs.getInt("severity"));
 			problem.setLatitude(rs.getFloat("latitude"));
+			problem.setDate(rs.getTimestamp("date"));
 			problem.setLongitude(rs.getFloat("longitude"));
-			problem.setState(rs.getString("street"));
+			problem.setStreet(rs.getString("street"));
 			problem.setState(rs.getString("state"));
 			problem.setAddressLine(rs.getString("address_line"));
 			problem.setCity(rs.getString("city"));
 			problem.setImage(rs.getString("image"));
-			problem.setDate(rs.getTimestamp("date"));
 		} 
 		rs.close();
 		statement.close();
