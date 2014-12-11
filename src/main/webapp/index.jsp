@@ -18,7 +18,7 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP or problem">
+	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP">
 	      <span id="submitSearchValue" class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>

@@ -19,7 +19,7 @@
 	  <div class="search">
 	    <div class="input-group">
 	      <span class="input-group-addon">Search</span>
-	      <input type="text" class="form-control" id="searchValue" placeholder= "search by address or ZIP">
+	      <input type="text" class="form-control" id="searchValue" placeholder= "search by ZIP">
 	      <span id="submitSearchValue" class="input-group-addon search-icon glyphicon glyphicon-search"></span>
 	    </div>
 	  </div>
@@ -79,8 +79,9 @@
 		    <label for="problemType" class="col-sm-3 control-label">Type of problem</label>
 		    <div class="col-sm-9">
 		      <select class="form-control" id="problemType" name="problemType">
-		      	<option value="2">Pot Hole</option>
-		      	<option value="3">Broken Pipe</option>
+		      	<option value="1">Pot Hole</option>
+		      	<option value="2">Broken Pipe</option>
+		      	<option value="3">Traffic Signal</option>
 		      	<option value="4">Fallen tree</option>
 		      </select>
 		    </div>
@@ -250,7 +251,7 @@ $(function(){
 			            '<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div> <hr/>';
 			        
 					bigList += '<div class="item"><div class="thumb"><div class="row rating-share">'+
-								'<span class="severity pull-left"><div class="progress"><div class="progress-bar" style="width: '+(entry.severity * 20)+'%;"><span class="sr-only">&nbsp;</span></div></div></span>'+
+								'<span class="severity pull-left"></span>'+
 								'<span class="actions pull-right"><i class="fa fa-share-alt"></i></span></div><div class="row"><img src="'+entry.image+'"></div><div class="row"><p>'+
 								entry.description+'<a data-toggle="modal" href="#bigViewModal" onclick="fetchProblemDetails('+entry.id+')" data-event-id=""> ...more</a></p></div></div></div>';
 										    
@@ -314,6 +315,8 @@ $(function(){
 <script>
 $(function(){
 	$("#chart-menu").click(function(){
+		$("#city-chart").empty();
+		$("#zip-chart").empty();
 		$.ajax({
 		    url : "<%=request.getContextPath()%>/rest/Problems/chartByZip",
 		    type: "GET",
